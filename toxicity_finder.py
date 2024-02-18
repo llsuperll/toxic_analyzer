@@ -25,11 +25,13 @@ def find_toxicity(comment):
     # translation = response.json()["responseData"]["translatedText"]
     result = translator.translate(comment, src='ru', dest='en')
     result = str(result)
-    print(result)
     vectorized_comment = vectorizer(result)
     results = model.predict(np.expand_dims(vectorized_comment, 0))
-    res = [round(j, 4) for j in results[0]]
-    return res
+    res = [round(j * 100) for j in results[0]]
+    text = ""
+    for i in range(len(res)):
+        text += f"{names[i]}: {res[i]}%\n"
+    return text
 
 
 def score_comment(comment):
