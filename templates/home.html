@@ -1,0 +1,38 @@
+{% extends  "base.html" %}{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 align="center">Проверка на токсичность</h1>
+<br />
+<form method="POST">
+	<textarea name="comment" id=comment" class="form-control"></textarea>
+	<br />
+	<div align="center">
+		<button type="submit" class="btn btn-primary">Проверить сообщение</button>
+	</div>
+</form>
+<br />
+<div class="container">
+  <div class="row row-cols-2">
+    <div class="col-md-3">Токсичный:</div>
+    <div class="col-md-auto">{{ toxic }} %</div>
+	  <div class="col-12"></div>
+    <div class="col-md-3">Слишком токсичный:</div>
+    <div class="col-md-auto">{{ very_toxic }} %</div>
+	  <div class="col-12"></div>
+	<div class="col-md-3">Непристойный:</div>
+    <div class="col-md-auto">{{ obscene }} %</div>
+	  <div class="col-12"></div>
+    <div class="col-md-3">Угроза:</div>
+    <div class="col-md-auto">{{ threat }} %</div>
+	  <div class="col-12"></div>
+	<div class="col-md-3">Оскорбление:</div>
+    <div class="col-md-auto">{{ insult }} %</div>
+	  <div class="col-12"></div>
+	<div class="col-md-3">Ненависть к личности:</div>
+    <div class="col-md-auto">{{ identity_hate }} %</div>
+	  <div class="col-12"></div>
+	<div class="col-md-3">Введённый комментарий:</div>
+    <div class="col">{{ comment }}</div>
+  </div>
+</div>
+{% endblock %}

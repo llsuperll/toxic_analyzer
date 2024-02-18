@@ -1,0 +1,10 @@
+.container {
+    align-items: center;
+}
+.col-md-auto {
+  padding: 5px;
+  line-height: 20px;
+  background: gray;
+  color: white;
+  text-align: center;
+}
