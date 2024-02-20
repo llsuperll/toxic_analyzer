@@ -45,6 +45,10 @@ plt.figure(figsize=(8, 5))
 pd.DataFrame(history.history).plot()
 plt.show()
 
+# сохранение обученной нейронной сети
+model.save('toxicity.h5')
+
+# оценка точности
 pre = Precision()
 re = Recall()
 acc = CategoricalAccuracy()

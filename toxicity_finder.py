@@ -3,8 +3,6 @@ import pandas as pd
 import keras
 from keras.layers import TextVectorization
 import numpy as np
-from googletrans import Translator
-import requests
 
 df = pd.read_csv(os.path.join('train-data', 'train.csv', 'train.csv'))
 X = df['comment_text']
@@ -12,7 +10,6 @@ MAX_FEATURES = 200000
 vectorizer = TextVectorization(max_tokens=MAX_FEATURES,
                                output_sequence_length=1800,
                                output_mode='int')
-translator = Translator()
 vectorizer.adapt(X.values)
 model = keras.models.load_model('toxicity.h5')
 names = ["Токсичный", "Слишком токсичный", "Непристойный",
@@ -20,13 +17,7 @@ names = ["Токсичный", "Слишком токсичный", "Непри�
 
 
 def find_toxicity(comment):
-    lang_pair = "ru|en"
-    params = {'q': comment, "langpair": lang_pair}
-    response = requests.get(url='https://api.mymemory.translated.net', params=params)
-    translation = response.json()["responseData"]["translatedText"]
-    #result = translator.translate(comment, src='ru', dest='en')
-    #result = str(result)
-    vectorized_comment = vectorizer(translation)
+    vectorized_comment = vectorizer(comment)
     results = model.predict(np.expand_dims(vectorized_comment, 0))
     res = [round(j, 4) for j in results[0]]
     return res
