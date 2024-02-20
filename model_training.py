@@ -17,6 +17,7 @@ vectorizer = TextVectorization(max_tokens=MAX_FEATURES,
                                output_mode='int')
 vectorizer.adapt(X.values)
 vectorized_text = vectorizer(X.values)
+# начало раблты с датасетом и его обработка
 dataset = tf.data.Dataset.from_tensor_slices((vectorized_text, y))
 dataset = dataset.cache()
 dataset = dataset.shuffle(160000)

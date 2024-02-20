@@ -4,6 +4,7 @@ import keras
 from keras.layers import TextVectorization
 import numpy as np
 from googletrans import Translator
+import requests
 
 df = pd.read_csv(os.path.join('train-data', 'train.csv', 'train.csv'))
 X = df['comment_text']
@@ -19,22 +20,20 @@ names = ["Токсичный", "Слишком токсичный", "Непри�
 
 
 def find_toxicity(comment):
-    # lang_pair = "ru|en"
-    # params = {'q': comment, "langpair": lang_pair}
-    # response = requests.get(url='https://api.mymemory.translated.net', params=params)
-    # translation = response.json()["responseData"]["translatedText"]
-    result = translator.translate(comment, src='ru', dest='en')
-    result = str(result)
-    vectorized_comment = vectorizer(result)
+    lang_pair = "ru|en"
+    params = {'q': comment, "langpair": lang_pair}
+    response = requests.get(url='https://api.mymemory.translated.net', params=params)
+    translation = response.json()["responseData"]["translatedText"]
+    #result = translator.translate(comment, src='ru', dest='en')
+    #result = str(result)
+    vectorized_comment = vectorizer(translation)
     results = model.predict(np.expand_dims(vectorized_comment, 0))
-    res = [round(j * 100) for j in results[0]]
+    res = [round(j, 4) for j in results[0]]
     return res
 
 
 def checker(comment):
-    result = translator.translate(comment, src='ru', dest='en')
-    result = str(result)
-    vectorized_comment = vectorizer(result)
+    vectorized_comment = vectorizer(comment)
     results = model.predict(np.expand_dims(vectorized_comment, 0))
     res = [round(j * 100) for j in results[0]]
     text = ""
