@@ -1,4 +1,4 @@
-from toxicity_finder import checker
+from frewqfe import checker
 
 print("Здесь можно протестировать работу алгоритма,\n "
       "на данный момент программа работает только с английским языком,\n"

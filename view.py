@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from data import db_session
 from forms.news import NewsForm
 from data.news import News
-from toxicity_finder import find_toxicity
+from find_toxicity import find_toxicity
 
 view = Blueprint("view", __name__)
 
@@ -12,24 +12,12 @@ view = Blueprint("view", __name__)
 @login_required
 def homepage():
     toxic = 0.00
-    very_toxic = 0.00
-    obscene = 0.00
-    threat = 0.00
-    insult = 0.00
-    identity_hate = 0.00
     comment = ""
     if request.method == "POST":
         comment = request.form.get("comment")
-        scores = find_toxicity(comment)
-        toxic = round(scores[0] * 100, 2)
-        very_toxic = round(scores[1] * 100, 2)
-        obscene = round(scores[2] * 100, 2)
-        threat = round(scores[3] * 100, 2)
-        insult = round(scores[4] * 100, 2)
-        identity_hate = round(scores[5] * 100, 2)
-    return render_template("home.html", user=current_user, toxic=toxic, very_toxic=very_toxic,
-                           obscene=obscene, threat=threat, insult=insult,
-                           identity_hate=identity_hate, comment=comment)
+        score = find_toxicity(comment)
+        toxic = round(score[0][0] * 100, 2)
+    return render_template("home.html", user=current_user, toxic=toxic, comment=comment)
 
 
 @view.route("/news")
@@ -57,12 +45,11 @@ def add_news():
         db_sess = db_session.create_session()
         current_user.news.append(news)
         db_sess.merge(current_user)
-        scores = find_toxicity(form.content.data)
-        for score in scores:
-            if score > 0.3:
-                flash("Ваше сообщение содержит неприемлемый контент и будет опубликовано "
-                      "только после проверки", "error")
-                return redirect("/news")
+        score = find_toxicity(form.content.data)
+        if round(score[0][0] * 100, 2) > 0.5:
+            flash("Ваше сообщение возможно содержит неприемлемый контент и будет добавлено "
+                  "только после проверки", "error")
+            return redirect("/news")
         db_sess.commit()
         return redirect('/news')
     return render_template('news_action.html', title='Добавление новости',
@@ -95,12 +82,11 @@ def edit_news(news_id):
             news.title = form.title.data
             news.content = form.content.data
             news.is_private = form.is_private.data
-            scores = find_toxicity(form.content.data)
-            for score in scores:
-                if score > 0.3:
-                    flash("Ваше сообщение содержит неприемлемый контент и будет изменено "
-                          "только после проверки", "error")
-                    return redirect("/news")
+            score = find_toxicity(form.content.data)
+            if round(score[0][0] * 100, 2) > 0.5:
+                flash("Ваше сообщение возможно содержит неприемлемый контент и будет добавлено "
+                      "только после проверки", "error")
+                return redirect("/news")
             db_sess.commit()
             return redirect('/news')
         else:
