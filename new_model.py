@@ -7,7 +7,7 @@ from collections import Counter
 import keras
 from keras.metrics import Precision
 from keras.models import Sequential
-from keras.layers import Dense, Embedding, Conv1D, GlobalMaxPooling1D
+from keras.layers import Embedding, Dense, GlobalMaxPooling1D, Conv1D
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
 
@@ -29,7 +29,7 @@ df1['comment'] = df1['comment'].apply(lambda x: text_cleaner(x))
 df = df.drop(df[df['comment'] == ''].index)
 df1 = df1.drop(df1[df1['comment'] == ''].index)
 
-# объединение дат
+# объединение датафреймов
 df = pd.concat([df, df1], ignore_index=True)
 comments = df['comment'].to_numpy()
 
@@ -71,16 +71,12 @@ max_comment_length = 700
 X_train_padded = pad_sequences(X_train_tokenized, maxlen=max_comment_length)
 X_test_padded = pad_sequences(X_test_tokenized, maxlen=max_comment_length)
 
-# Параметры Embedding слоя
-max_features = dict_size
-embedding_dim = 64
-
 # Создание модели нейронной сети
 model = Sequential()
-model.add(Embedding(input_dim=max_features,
-                    output_dim=embedding_dim,
+model.add(Embedding(input_dim=dict_size,
+                    output_dim=64,
                     input_length=max_comment_length))
-model.add(Conv1D(filters=embedding_dim*2,
+model.add(Conv1D(filters=64*2,
                  kernel_size=2,
                  activation='relu'))
 model.add(GlobalMaxPooling1D())
