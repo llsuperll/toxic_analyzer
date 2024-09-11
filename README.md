@@ -1,17 +1,17 @@
-Описание файлов проекта:
+Files:
 
-main.py - запуск проекта
+main.py - run program
 
-new_model.py - создание и тренировка модели
+new_model.py - model training
 
-__init__.py, authorization.py, view.py - сайт (backend)
+__init__.py, authorization.py, view.py - website (backend)
 
-find_toxicity.py - проверка введенных комментариев на токсичность
+find_toxicity.py model using to check if comments are toxic
 
-директории:
+directories:
 
-toxic_finder - архитектура и веса нейронной сети
+toxic_finder - neural network architecture and weights
 
-forms, templates, static.css - дизайн сайта (frontend)
+forms, templates, static.css - website (frontend)
 
-db, data - работа с датабазой для сайта
+db, data - database for website
